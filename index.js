@@ -197,7 +197,7 @@ Template.login.events( {
 	Template.register.events({
     'submit .register-form' : function(event, t) {
       event.preventDefault();
-      var email = t.find('#account-email').value
+      var email = t.find('#account-email').value   // duplication is handled for email but try delete and add same email
         , password = t.find('#account-password').value
 				, username = t.find('#account-username').value;
 			
@@ -213,8 +213,8 @@ Template.login.events( {
 						profile  : {	//publicly visible fields like firstname goes here
 							wins : 0,
 							losses : 0,
-							teams: [],
-							faction: "White"
+							teams: [0],
+							faction: "White" // for teams, no team is allowed another match till image is submitted
 						}
 					}, 
 					function(err){
@@ -244,7 +244,7 @@ Template.login.events( {
 				var email = $(".player_email").val();
 				var pw = $(".player_pw").val();
 				var teams = $(".player_teams").val();
-				var faction = $(".player_faction").val();
+				var faction = $(".player_faction").val(); 
 				Meteor.call("addPlayer", nick, email, pw, teams, faction);
 				//event.target.text.value = "";
 				clearValuesPlayer();
