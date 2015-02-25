@@ -1,14 +1,148 @@
+﻿<!-- myApp.html -->
 <head>
-  <title>arab-gl</title>
+  <title>Database</title>
 </head>
 
 <body>
-  <h1>Welcome to Meteor!</h1>
+	{{> notifications}}
+  <div class="container">
+    <header>
+      <h1>Team List ({{teamCount}})</h1>
+			{{#if currentUser}}
+				<h1>Current User Logged in : {{currentUser.username}}</h1>
+				<div class="logout"><a href="">Sign Out</a></div> <br>
+			{{else}}
+				<!-- dead code here disregard this line -->
+				<!--{{> quickForm schema="Schema.User" id="demo" omitFields="_id, createdAt, emails, profile, services"}}  schema="userSchema"  collection="Meteor.users" -->
+				{{> login}}
+				{{> register}}
+			{{/if}}
+    </header>
 
-  {{> hello}}
+		{{> main}}
+  </div>
+
 </body>
 
-<template name="hello">
-  <button>Click Me</button>
-  <p>You've pressed the button {{counter}} times.</p>
+<template name="login">
+	<h2>Login Form</h2>
+	<form class="login-form" action="action">
+      <div>
+        <input type="text" id="login-username" placeholder="Username"/>
+        <input type="email" id="login-email" placeholder="email"/>
+        <input type="password" id="login-password" placeholder="password"/>
+        <input type="submit" id="login-button" value="Sign in" />
+     </div>
+  </form> <br><br>
+</template>
+
+<template name="register">
+	<h2>Register Form</h2>
+	<form class="register-form" action="action">
+      <div>
+       <input type="text" id="account-username" placeholder="Username"/>
+       <input type="email" id="account-email" placeholder="Email"/>
+       <input type="password" id="account-password" placeholder="Password"/>
+       <input type="submit" id="create-account" value="Create an Account" />
+     </div>
+   </form> <br><br>
+</template>
+
+
+<template name="main">
+	<div class="container-fluid">
+		<div class="row-fluid">
+			<div class="row">
+				<div class="span12">
+					<table class="table-striped table-condensed table-bordered">
+						<thead>
+							<tr>
+								<td>Team ID</td>
+								<td>Name</td>
+								<td>Type</td>
+								<td>Game</td>
+								<td>Captain</td>
+								<td>Ranking</td>
+								<td>Members</td>
+								<td>Delete Team</td>
+							</tr>
+						</thead>
+						<tbody>
+							{{#each teams_helper}}
+							<tr>
+								<td>{{team_id}}</td>
+								<td>{{team_name}}</td>
+								<td>{{team_type}}</td>
+								<td>{{team_game}}</td>
+								<td>{{team_captain}}</td>
+								<td>{{team_ranking}}</td>
+								<td>{{team_members}}</td>
+								<td><button class="delete_team">&times;</button></td>
+							</tr>
+							{{/each}}
+							{{#if currentUser}}
+							<tr class="new-team">
+								<td>team ID</td>
+								<td><input type="text" name="team_name" value="" class="team_name"></td>
+								<td><input type="text" name="team_type" value="" class="team_type"></td> <!--  need to make dropdown list having white/black/esports -->
+								<td><input type="text" name="team_game" value="" class="team_game"></td> <!--  similar dropdown list containing games  -->
+								<td></td>
+								<td></td>
+								<td><input type="text" style="border: solid;" name="team_members" value="" class="team_members1"><br>
+									<input type="text" style="border: solid;" name="team_members" value="" class="team_members2"><br>
+									<input type="text" style="border: solid;" name="team_members" value="" class="team_members3"><br>
+									<input type="text" style="border: solid;" name="team_members" value="" class="team_members4"><br>
+									<form class="input-team" > <!-- style="display:none;" -->
+									<input type="text" style="border: solid;" name="team_members" value="" class="team_members5"><br>
+									</form>
+								</td>
+								<td></td>
+							</tr>
+							{{/if}}
+						</tbody>
+					</table>
+					{{#if currentUser}}
+					<br><br>
+					<table class="table-striped table-condensed table-bordered">
+						<thead>
+							<tr>
+								<td>User ID</td>
+								<td>User Nickname</td>
+								<td>User Email</td>
+								<td>User Faction</td>
+								<td>User Latest Thread</td>
+								<td>User Teams</td>
+								<td>User Dead Column</td>
+							</tr>
+						</thead>
+						<tbody>
+							{{#each users}}
+							<tr>
+								<td>{{_id}}</td>
+								<td>{{username}}</td>
+								<td>
+									{{#each emails}}
+								    {{address}}<br>
+									{{/each}}
+								</td>
+								<!--{{#with profile}} -->
+								<td>{{faction}}</td>
+								<td>{{latest_thread}}</td>
+									<td>
+									{{#each teams}}
+								    {{this}}, 
+									{{/each}}
+								</td> 
+								<td><button class="delete_user">&times;</button></td> 
+								
+<!--								{{/with}} -->
+							</tr>
+							{{/each}}
+						</tbody>
+					</table>
+					{{/if}}
+				</div>
+			</div>
+		</div>
+	</div>
 </template>
