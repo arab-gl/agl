@@ -1,13 +1,13 @@
-<!-- index.html -->
+﻿<!-- myApp.html -->
 <head>
-  <title>Player Database</title>
+  <title>Database</title>
 </head>
 
 <body>
 	{{> notifications}}
   <div class="container">
     <header>
-      <h1>Player List ({{playerCount}})</h1>
+      <h1>Team List ({{teamCount}})</h1>
 			{{#if currentUser}}
 				<h1>Current User Logged in : {{currentUser.username}}</h1>
 				<div class="logout"><a href="">Sign Out</a></div> <br>
@@ -57,37 +57,43 @@
 					<table class="table-striped table-condensed table-bordered">
 						<thead>
 							<tr>
-								<td>Player ID</td>
-								<td>Nickname</td>
-								<td>Email</td>
-								<td>Password</td>
-								<td>Teams</td>
-								<td>Faction</td>
-								<td>Delete Player</td>
+								<td>Team ID</td>
+								<td>Name</td>
+								<td>Type</td>
+								<td>Game</td>
+								<td>Captain</td>
+								<td>Ranking</td>
+								<td>Members</td>
+								<td>Delete Team</td>
 							</tr>
 						</thead>
 						<tbody>
-							{{#each players}}
+							{{#each teams_helper}}
 							<tr>
-								<td>{{player_id}}</td>
-								<td>{{player_nickname}}</td>
-								<td>{{player_email}}</td>
-								<td>{{player_pw}}</td>
-								<td>{{player_teams}}</td>
-								<td>{{player_faction}}</td>
-								<td><button class="delete_player">&times;</button></td>
+								<td>{{team_id}}</td>
+								<td>{{team_name}}</td>
+								<td>{{team_type}}</td>
+								<td>{{team_game}}</td>
+								<td>{{team_captain}}</td>
+								<td>{{team_ranking}}</td>
+								<td>{{team_members}}</td>
+								<td><button class="delete_team">&times;</button></td>
 							</tr>
 							{{/each}}
 							{{#if currentUser}}
-							<tr class="new-player">
-								<td>Player ID</td>
-								<td><input type="text" name="player_nickname" value="" class="player_nickname"></td>
-								<td><input type="text" name="player_email" value="" class="player_email"></td>
-								<td><input type="text" name="player_pw" value="" class="player_pw"></td>
-								<td><input type="text" name="player_teams" value="" class="player_teams"></td>
-								<td>
-									<form class="input-player">
-									<input type="text" name="player_faction" value="" class="player_faction">
+							<tr class="new-team">
+								<td>team ID</td>
+								<td><input type="text" name="team_name" value="" class="team_name"></td>
+								<td><input type="text" name="team_type" value="" class="team_type"></td> <!--  need to make dropdown list having white/black/esports -->
+								<td><input type="text" name="team_game" value="" class="team_game"></td> <!--  similar dropdown list containing games  -->
+								<td></td>
+								<td></td>
+								<td><input type="text" style="border: solid;" name="team_members" value="" class="team_members1"><br>
+									<input type="text" style="border: solid;" name="team_members" value="" class="team_members2"><br>
+									<input type="text" style="border: solid;" name="team_members" value="" class="team_members3"><br>
+									<input type="text" style="border: solid;" name="team_members" value="" class="team_members4"><br>
+									<form class="input-team" > <!-- style="display:none;" -->
+									<input type="text" style="border: solid;" name="team_members" value="" class="team_members5"><br>
 									</form>
 								</td>
 								<td></td>
@@ -103,10 +109,10 @@
 								<td>User ID</td>
 								<td>User Nickname</td>
 								<td>User Email</td>
-								<td>User Teams</td>
-								<td>User Wins</td>
-								<td>User Losses</td>
 								<td>User Faction</td>
+								<td>User Latest Thread</td>
+								<td>User Teams</td>
+								<td>User Dead Column</td>
 							</tr>
 						</thead>
 						<tbody>
@@ -119,12 +125,17 @@
 								    {{address}}<br>
 									{{/each}}
 								</td>
-								{{#with profile}}
-								<td>{{teams}}</td>
-								<td>{{wins}}</td>
-								<td>{{losses}}</td>
+								<!--{{#with profile}} -->
 								<td>{{faction}}</td>
-								{{/with}}
+								<td>{{latest_thread}}</td>
+									<td>
+									{{#each teams}}
+								    {{this}}, 
+									{{/each}}
+								</td> 
+								<td><button class="delete_user">&times;</button></td> 
+								
+<!--								{{/with}} -->
 							</tr>
 							{{/each}}
 						</tbody>

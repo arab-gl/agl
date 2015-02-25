@@ -1,5 +1,5 @@
-// index.js
-Players = new Mongo.Collection("players");
+﻿// myApp.js
+Teams = new Mongo.Collection("teams");
 
 //////// BEGIN User Data Model Schema Definition
 Schema = {};
@@ -58,6 +58,10 @@ userSchema.UserProfile = new SimpleSchema({
 });
 */
 Schema.User = new SimpleSchema({
+		_id: {
+			type: String,
+			optional: true
+		},
     username: {
         type: String,
         regEx: /^[a-z0-9A-Z_]{3,15}$/
@@ -78,7 +82,7 @@ Schema.User = new SimpleSchema({
     createdAt: {
         type: Date
     },
-    profile: {
+    profile: { // this is public and modifieable
         type: Object, // use either "Object" or "userSchema.UserProfile" if its defined above
         optional: true
     },
@@ -86,7 +90,20 @@ Schema.User = new SimpleSchema({
         type: Object,
         optional: true,
         blackbox: true
-    }
+    },
+		teams: {
+        type: [String],
+        optional: true,
+        blackbox: true
+    },
+		faction: {
+			type: String,
+			optional: true
+		},
+		latest_thread: {
+			type: String,
+			optional: true
+		},
 
 /*    
 		// Add `roles` to your schema if you use the meteor-roles package.
@@ -111,13 +128,17 @@ Meteor.users.attachSchema(Schema.User);
 
 // BEGIN Auxiliary helper functions
 
-// clear input boxes for next expected input in Player table 
-var clearValuesPlayer = function() {
-	$(".player_nickname").val("").focus();
-	$(".player_email").val("");
-	$(".player_pw").val("");
-	$(".player_teams").val("");
-	$(".player_faction").val("");
+// clear input boxes for next expected input in Team table 
+var clearValuesTeam = function() {
+	$(".team_name").val("").focus();
+	$(".team_type").val("");
+	$(".team_game").val("");
+	$(".team_members1").val("");
+	$(".team_members2").val("");
+	$(".team_members3").val("");
+	$(".team_members4").val("");
+	$(".team_members5").val("");
+	$(".team_captain").val("");
 }
 
 // trim helper to remove all whitespace
@@ -139,12 +160,13 @@ var clearValuesPlayer = function() {
 
 if (Meteor.isClient) {
   // This code only runs on the client
-	Meteor.subscribe("players");
+	Meteor.subscribe("teams");
 	Meteor.subscribe("users");
+	Meteor.subscribe("teams_pub");
 
   Template.body.helpers({
-		playerCount: function () {
-			return Players.find({}).count();
+		teamCount: function () {
+			return Teams.find({}).count();
 	  },
 		userSchema: function() {
 			return Schema.User;
@@ -209,13 +231,13 @@ Template.login.events( {
 					{ 
 						username : username, 
 						email: email,
-						password : password, 
-						profile  : {	//publicly visible fields like firstname goes here
+						password : password 
+/*    profile  : {	//publicly visible fields like firstname goes here
 							wins : 0,
 							losses : 0,
 							teams: [0],
-							faction: "White" // for teams, no team is allowed another match till image is submitted
-						}
+							faction: "White" // for teams, no team is allowed another match till image is submitted  
+						}*/
 					}, 
 					function(err){
 		        if (err) {
@@ -235,40 +257,32 @@ Template.login.events( {
 
 
 	Template.main.events ( {
-		  "submit .input-player": function (event) {
-				// This function is called when the new player form is submitted by pressing enter on the last textbox "faction"
+		  "submit .input-team": function (event) {
+				// This function is called when the new team form is submitted by pressing enter on the last textbox "faction"
 				//var text_faction = event.target.text.value;
 				//console.log(event);
-				console.log("inputtting player");
-				var nick = $(".player_nickname").val();
-				var email = $(".player_email").val();
-				var pw = $(".player_pw").val();
-				var teams = $(".player_teams").val();
-				var faction = $(".player_faction").val(); 
-				Meteor.call("addPlayer", nick, email, pw, teams, faction);
-				//event.target.text.value = "";
-				clearValuesPlayer();
-				// prevent deform form submit			
-				return false;
-			},
-			"click .delete_player": function () { // called when the cross button is clicked on next to a player entry
-				Meteor.call("deletePlayer", this._id);
-		  	},
-			"submit .input-team": function (event) {
-				// This function is called when the new team form is submitted by pressing enter on the last textbox "team members"
-				//var text_members = event.target.text.value;
-				//console.log(event);
-				var name = $("#team_name").val();
-				var game = $("#team_game").val();
-				var captain = $("#team_captain").val();
-				var faction = $("#team_faction").val();
-				var members = $("#team_members").val();
-				Meteor.call("addTeam", name, game, captain, members, faction);
+				console.log("inputting team");
+				var name = $(".team_name").val();
+				var type = $(".team_type").val();
+				var game = $(".team_game").val();
+				var members = [];
+				members[0]=$(".team_members1").val();
+				members[1]=$(".team_members2").val();
+				members[2]=$(".team_members3").val();
+				members[3]=$(".team_members4").val();
+				members[4]=$(".team_members5").val();
+				Meteor.call("addTeam", name, type, game, members);
 				//event.target.text.value = "";
 				clearValuesTeam();
 				// prevent deform form submit			
 				return false;
 			},
+			"click .delete_team": function () { // called when the cross button is clicked on next to a team entry
+				Meteor.call("deleteTeam", this._id);
+		  	},
+			"click .delete_user": function () { // called when the cross button is clicked on next to a team entry
+				Meteor.call("deleteUser", this._id);
+		  	},
 			"click .delete_team": function () {
 				console.log("team to delete : " + this);				
 				//Meteor.call("deleteTeam", this._id);
@@ -280,62 +294,107 @@ Template.login.events( {
 		isOwner: function() {
 			return this.owner === Meteor.userId();
 		},
-		players: function () {
-	      // return all of the players
-	      return Players.find({});
+		teams_helper: function () {
+	      // return all of the teams
+	      return Teams.find({});
 	 	},
 		users: function () {
 	      // return all of the users registered in database
 	      return Meteor.users.find({});
-	 	}
+	 	}/*,
+		teams: function () {
+	      // return all of the users registered in database
+	      return Meteor.users.find({}, {fields: {'teams': 1}});    //{fields: {'username': 1, 'emails': 1, 'teams': 1, 'faction': 1, 'latest_thread': 1}});
+		}*/
 	});
-
 }  // end isClient
 
 
 Meteor.methods ({	
-	addPlayer: function (nick, email, pw, teams, faction) {
+	addTeam: function (name, type, game, members) {
 		// make sure the user is logged in before inserting the entry
 		if (! Meteor.userId()) {
 			throw new Meteor.Error("Not Authorised");
 		}
-		
-		Players.insert({
-			player_id: Meteor.userId(), // id of the player i.e. the logged in user
-			player_username: Meteor.user().username, // username of logged in user/player
-			player_nickname: nick, 
-			player_email: email, // Email of the player
-			player_pw: pw, // pw of player, yeah i know, its stupid for the timebeing
-			player_teams: teams, // assuming its a single string for now, need to put support for list later
-			player_faction: faction // player faction, since it has only 2 choices, maybe make it boolean later
+		var ranking;
+		if (type === "esports")
+		{
+				// check for placement and check for previous rank and math
+				ranking = 0;
+		}
+		else {
+			ranking = -900;
+		}
+
+
+		Teams.insert({
+			team_name: name, // name of the team
+			team_type: type, // whether the team is in faction (black/white) or esports
+			team_game: game, // game in which the team is competing
+			team_captain: members[0],
+			team_members: members, // assuming its an array of strings for now,  need to put in feature of autocompleting first entry as logged in user later
+			team_ranking: ranking // team ranking, 
 			}, function( error, result) { 
     			if ( error ) console.log ( error ); //info about what went wrong
     			if ( result ) {  //the _id of new object if successful
 						console.log ( result ); 
-						Notifications.info('title', 'message');
+						Notifications.info('Insert success', 'Team inserted');
 					}
   		});
 	},
-	deletePlayer: function (playerId) {
-		var playerToDelete = Players.findOne(playerId);
-		if (playerToDelete.player_id != Meteor.userId()) {
+	deleteTeam: function (teamId) {
+		var teamToDelete = Teams.findOne(teamId);
+		if (teamToDelete.team_id != Meteor.userId()) {
 		    throw new Meteor.Error("not-authorized");
-				Notifications.warn('Not authorised', 'this player belongs to another user');
+				Notifications.warn('Not authorised', 'this team belongs to another user');
 		}
 		else {
-			Players.remove(playerId);
-			Notifications.success('Deletion Succesfull', 'The player has been deleted');
+			Teams.remove(teamId);
+			Notifications.success('Deletion Succesfull', 'The team has been deleted');
 		}
+	},
+	deleteUser: function (userId) {
+		var userToDelete = Meteor.users.findOne(userId);
+		Meteor.users.remove(userId);
+		Notifications.success('Deletion Succesfull', 'The user has been deleted');
 	}
 });
 
 if (Meteor.isServer) {
-	Meteor.publish( "players", function () {
-		return Players.find();
+	Meteor.publish( "teams", function () {
+		return Teams.find();
 	});
 
 	Meteor.publish( "users", function () {
 		//return Meteor.users.find({}, {fields:{_id: true, profile: true, emails: true, username: true}});
 		return Meteor.users.find();
 	});
-}
+
+	Meteor.publish( "teams_pub", function () {
+		//return Meteor.users.find({}, {fields:{_id: true, profile: true, emails: true, username: true}});
+return Meteor.users.find({}, {fields: {'teams': 1}});
+	});
+// 'faction': 1, 'latest_thread': 1
+
+	Accounts.onCreateUser(function(options, user) {
+		user.profile = options.profile || {};
+		//nickname: "",  // what about username field ?
+		user.faction = "false"; // boolean style or string style ?
+		user.latest_thread = "blahblahblah";
+// threads will have their own file in the database and will be replacing this value constantly based on user posting activity, the id will give back
+// an href that we will display  (so meteor transform idea)
+		user.teams = [ //teams ?
+			"askjhd",  // game name or game number ? also need check for team id
+			"2",
+			"3",
+			"4",
+			"5",
+			"6",
+			"7",
+			"8"
+			//{game9: "9"}
+			];	
+	 	//user = _.extend(user, userData);
+		return user;
+	}); // END onCreateUser 
+} // END isServer
