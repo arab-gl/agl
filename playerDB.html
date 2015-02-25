@@ -1,0 +1,136 @@
+<!-- playerDB.html -->
+<head>
+  <title>player Database</title>
+</head>
+
+<body>
+  <div class="container">
+    <header>
+      <h1>Player List ({{playerCount}})</h1>
+
+	{{>loginButtons}}
+
+	{{#if currentUser}}
+		<form class="new-task">  
+			<input type="text" name="text" placeholder="Type to add new tasks" />		
+		</form>
+	{{/if}}
+    </header>
+
+    <ul>
+      {{#each tasks}}
+        {{> task}}
+      {{/each}}
+    </ul>
+	{{> main}}
+  </div>
+	
+</body>
+
+<template name="task">
+  <li class="{{#if checked}}checked{{/if}}">
+    <input type="checkbox" checked="{{checked}}" class="toggle-checked" />
+    <span class="text"><strong> {{username}} </strong> - {{text}}</span>
+  </li>
+</template>
+
+<template name="main">
+	<div class="container-fluid">
+		<div class="row-fluid">
+			<div class="row">
+				<div class="span12">
+					<table class="table-striped table-condensed table-bordered">
+						<thead>
+							<tr>
+								<td>Player ID</td>
+								<td>Nickname</td>
+								<td>Email</td>
+								<td>Password</td>
+								<td>Teams</td>
+								<td>Faction</td>
+								<td>Delete Player</td>
+							</tr>
+						</thead>
+						<tbody>
+							{{#each players}}
+							<tr>
+								<td>{{player_id}}</td>
+								<td>{{player_nickname}}</td>
+								<td>{{player_email}}</td>
+								<td>{{player_pw}}</td>
+								<td>{{player_teams}}</td>
+								<td>{{player_faction}}</td>
+								<td><button class="delete_player">&times;</button></td>
+							</tr>
+							{{/each}}
+							{{#if currentUser}}
+							<tr class="new-player">
+								<td>Player ID</td>
+								<td><input type="text" name="player_nickname" value="" id="player_nickname"></td>
+								<td><input type="text" name="player_email" value="" id="player_email"></td>
+								<td><input type="text" name="player_pw" value="" id="player_pw"></td>
+								<td><input type="text" name="player_teams" value="" id="player_teams"></td>
+								<td>
+									<form class="input-player">
+									<input type="text" name="player_faction" value="" id="player_faction">
+									</form>
+								</td>
+								<td></td>
+							</tr>
+							{{/if}}
+						</tbody>
+					</table>
+					<br><br>
+					<table class="table-striped table-condensed table-bordered">
+						<thead>
+							<tr>
+								<td>Team ID</td>
+								<td>Team Name</td>
+								<td>Game</td>
+								<td>Team Captain</td>
+								<td>Team Faction</td>
+								<td>Team Members</td>
+								<td>Games Won</td>
+								<td>Games Lost</td>
+								<td>Delete Team</td>
+							</tr>
+						</thead>
+						<tbody>
+							{{#each teams}}
+							<tr>
+								<td>{{team_id}}</td>
+								<td>{{team_name}}</td>
+								<td>{{team_game}}</td>
+								<td>{{team_captain}}</td>
+								<td>{{team_faction}}</td>
+								<td>{{team_members}}</td>
+								<td>{{team_wins}}</td>
+								<td>{{team_losses}}</td>
+								<td><button class="delete_team">&times;</button></td>
+							</tr>
+							{{/each}}
+							{{#if currentUser}}
+							<tr class="new-team">
+								<td>Team ID</td>
+								<td><input type="text" name="team_name" value="" id="team_name"></td>
+								<td><input type="text" name="team_game" value="" id="team_game"></td>
+								<td><input type="text" name="team_captain" value="" id="team_captain"></td>
+								<td>White/Black</td>
+								<td>
+									<form class="input-team">									
+									<input type="text" name="team_members" 
+										placeholder="upto 5 people can be added" id="team_members">
+									</form>
+								</td>									
+								<td>0</td>
+								<td>0</td>
+								<td></td>
+							</tr>
+							{{/if}}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</template>

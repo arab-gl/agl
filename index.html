@@ -1,0 +1,137 @@
+<!-- index.html -->
+<head>
+  <title>Player Database</title>
+</head>
+
+<body>
+	{{> notifications}}
+  <div class="container">
+    <header>
+      <h1>Player List ({{playerCount}})</h1>
+			{{#if currentUser}}
+				<h1>Current User Logged in : {{currentUser.username}}</h1>
+				<div class="logout"><a href="">Sign Out</a></div> <br>
+			{{else}}
+				<!-- dead code here disregard this line -->
+				<!--{{> quickForm schema="Schema.User" id="demo" omitFields="_id, createdAt, emails, profile, services"}}  schema="userSchema"  collection="Meteor.users" -->
+				{{> login}}
+				{{> register}}
+			{{/if}}
+    </header>
+
+		{{> main}}
+  </div>
+
+</body>
+
+<template name="login">
+	<h2>Login Form</h2>
+	<form class="login-form" action="action">
+      <div>
+        <input type="text" id="login-username" placeholder="Username"/>
+        <input type="email" id="login-email" placeholder="email"/>
+        <input type="password" id="login-password" placeholder="password"/>
+        <input type="submit" id="login-button" value="Sign in" />
+     </div>
+  </form> <br><br>
+</template>
+
+<template name="register">
+	<h2>Register Form</h2>
+	<form class="register-form" action="action">
+      <div>
+       <input type="text" id="account-username" placeholder="Username"/>
+       <input type="email" id="account-email" placeholder="Email"/>
+       <input type="password" id="account-password" placeholder="Password"/>
+       <input type="submit" id="create-account" value="Create an Account" />
+     </div>
+   </form> <br><br>
+</template>
+
+
+<template name="main">
+	<div class="container-fluid">
+		<div class="row-fluid">
+			<div class="row">
+				<div class="span12">
+					<table class="table-striped table-condensed table-bordered">
+						<thead>
+							<tr>
+								<td>Player ID</td>
+								<td>Nickname</td>
+								<td>Email</td>
+								<td>Password</td>
+								<td>Teams</td>
+								<td>Faction</td>
+								<td>Delete Player</td>
+							</tr>
+						</thead>
+						<tbody>
+							{{#each players}}
+							<tr>
+								<td>{{player_id}}</td>
+								<td>{{player_nickname}}</td>
+								<td>{{player_email}}</td>
+								<td>{{player_pw}}</td>
+								<td>{{player_teams}}</td>
+								<td>{{player_faction}}</td>
+								<td><button class="delete_player">&times;</button></td>
+							</tr>
+							{{/each}}
+							{{#if currentUser}}
+							<tr class="new-player">
+								<td>Player ID</td>
+								<td><input type="text" name="player_nickname" value="" class="player_nickname"></td>
+								<td><input type="text" name="player_email" value="" class="player_email"></td>
+								<td><input type="text" name="player_pw" value="" class="player_pw"></td>
+								<td><input type="text" name="player_teams" value="" class="player_teams"></td>
+								<td>
+									<form class="input-player">
+									<input type="text" name="player_faction" value="" class="player_faction">
+									</form>
+								</td>
+								<td></td>
+							</tr>
+							{{/if}}
+						</tbody>
+					</table>
+					{{#if currentUser}}
+					<br><br>
+					<table class="table-striped table-condensed table-bordered">
+						<thead>
+							<tr>
+								<td>User ID</td>
+								<td>User Nickname</td>
+								<td>User Email</td>
+								<td>User Teams</td>
+								<td>User Wins</td>
+								<td>User Losses</td>
+								<td>User Faction</td>
+							</tr>
+						</thead>
+						<tbody>
+							{{#each users}}
+							<tr>
+								<td>{{_id}}</td>
+								<td>{{username}}</td>
+								<td>
+									{{#each emails}}
+								    {{address}}<br>
+									{{/each}}
+								</td>
+								{{#with profile}}
+								<td>{{teams}}</td>
+								<td>{{wins}}</td>
+								<td>{{losses}}</td>
+								<td>{{faction}}</td>
+								{{/with}}
+							</tr>
+							{{/each}}
+						</tbody>
+					</table>
+					{{/if}}
+				</div>
+			</div>
+		</div>
+	</div>
+</template>
