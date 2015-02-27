@@ -7,9 +7,6 @@
 meteor-platform
 accounts-base
 gfk:notifications
-<<<<<<< Updated upstream
 aldeed:simple-schema
 aldeed:collection2
 aldeed:autoform
-=======
->>>>>>> Stashed changes
