@@ -360,7 +360,14 @@ Meteor.methods ({
       //   Notifications.warn('Not authorised', 'this team belongs to another user');
       // }
       // else {
-        console.log(teamToDelete);
+        console.log("This is the team "+teamToDelete);
+        for (var i = teamToDelete.team_members.length - 1; i >= 1; i--) {
+              // console.log(teamToDelete.team_members[i]);
+              Meteor.users.update({username: teamToDelete.team_members[i]}, {$pull: { teams: teamToDelete._id }});
+
+              // Meteor.call("addTeamToUser" , teamToDelete.team_members[i], result);
+             
+            };
         console.log(teamId);
         Teams.remove(teamToDelete);
         Notifications.success('Deletion Succesfull', 'The team has been deleted');
@@ -371,9 +378,9 @@ Meteor.methods ({
       Meteor.users.remove(userId);
       Notifications.success('Deletion Succesfull', 'The user has been deleted');
     },
-    addTeamToUser: function(userId, teamId){
+    addTeamToUser: function(userName, teamId){
       console.log("Adding team "+teamId);
-      var result = Meteor.users.update({ username: userId}, {$push: {teams: teamId} });
+      var result = Meteor.users.update({ username: userName}, {$push: {teams: teamId} });
       console.log(result);
     }
   });
