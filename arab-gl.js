@@ -160,6 +160,10 @@ var checkPasswordLength = function(pw) {
 	}
 };
 
+
+/**
+  Add team's Reference ID to the members in that team.
+**/
 var addTeamToMembers = function(teamName) {
 	var usr_obj;
 	//alert(teamName);
@@ -191,6 +195,9 @@ var addTeamToMembers = function(teamName) {
 	}
 };
 
+/**
+ remove team's Reference ID to the members in that team.
+**/
 var removeTeamFromMembers = function(teamId) {
 	var usr_obj;
 	//alert(teamName);
@@ -223,6 +230,9 @@ var removeTeamFromMembers = function(teamId) {
 	}
 };
 
+/**
+  when the user is deleted we need to remove him from the teams he is already enrolled in 
+**/
 var removeUserFromTeams = function(userId) {
 	var team_obj;
 	//alert(teamName);
@@ -253,8 +263,6 @@ var removeUserFromTeams = function(userId) {
 		}
 	}
 };
-
-
 
 
 

@@ -1,0 +1,23 @@
+*We need to brush-up the team/user interaction:
+
+1- 	We have to decide on who CAN remove members from the team, is it only the captain, any user could just leave??
+2- 	Users are added to the team per invitation, after he accepts the invitation he becomes a member of the team
+3- 	We need to find a way to keep unverified teams in the database and at the same time not keep zombie teams in the	database
+4- Let's verify that the teams and users skeletion complies with the google doc we created
+5- if we have the time and would like to spare some effort on 3rd party logging in, i.e Google+, Facebook et al.
+
+
+
+*After we are done with this matches should be easIER
+
+1- 	Make a Schema for matches, we need to get back to the google doc we created and shared to check we didnt forget 	any attribute
+	
+2-	Functions sekeleton:
+		- addMatch(Team1, Team2, Time of the match)
+		- deleteMatch(MatchID)
+		- postponeMatch(MatchID, New Time): we will need to inform both team members about the new time
+		- endMatch(MatchID), this will check which team won and give points accordingly
+
+
+
+MOST IMPORTANT THING, we need to keep all our methods/functions on the server side, i dont like that we are doing stuff on the client side.
